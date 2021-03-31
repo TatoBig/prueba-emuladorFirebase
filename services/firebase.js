@@ -14,21 +14,16 @@ let config = {
     databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DB_URL
 }
 
-// if(location.hostname === 'localhost'){
-//     config = {
+!firebase.apps.length && firebase.initializeApp(config)
 
-//     }
-// }
+const db = firebase.firestore();
+const auth = firebase.auth;
 
-
-  
-export default function initFirebase(){
-    !firebase.apps.length && firebase.initializeApp(config)
+// eslint-disable-next-line no-restricted-globals
+if (process.env.NODE_ENV === 'development') {
+  db.useEmulator('localhost', 8080);
+  auth().useEmulator('http://localhost:9099/', { disableWarnings: true });
 }
 
-// export function database(){ 
-//     const dev = process.env.NODE_ENV === 'development'
-//     return db
-// }
-
-export const dev = process.env.NODE_ENV === 'development'
+export default firebase;
+export { db, auth };
